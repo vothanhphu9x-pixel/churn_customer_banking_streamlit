@@ -5,13 +5,18 @@ import streamlit as st
 from graphviz import Digraph
 
 # --- 1. CẤU HÌNH & HẰNG SỐ ---
-PROJECT_ROOT = os.getcwd()
+def find_file(filename):
+    candidates = [
+        os.path.join(os.getcwd(), filename),
+        os.path.join(os.path.dirname(__file__), filename),
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            return path
+    return None
 
-DATA_DIR = os.path.join(PROJECT_ROOT, "data")
-
-SCHEMA_PATH = os.path.join(DATA_DIR, "schema.json")
-DB_SCHEMA_PATH = os.path.join(DATA_DIR, "database_schema.json")
-
+SCHEMA_PATH = find_file("schema.json")
+DB_SCHEMA_PATH = find_file("database_schema.json")
 
 REQUIRED_KEYS = [
     "Feature", "Category", "Used in Model", "Strength", 
