@@ -1,0 +1,97 @@
+{
+  "Customer Master": {
+    "pk": ["customer_id"],
+    "columns": {
+      "customer_id": "STRING",
+      "signup_date": "DATE",
+      "date_of_birth": "DATE",
+      "segment": "STRING",
+      "tier": "STRING"
+    }
+  },
+  "CASA": {
+    "pk": ["id"],
+    "fk": {
+      "customerid": "Customer Master.customer_id"
+    },
+    "columns": {
+      "id": "STRING",
+      "customerid": "STRING",
+      "casa_daily_average_balance": "NUMERIC",
+      "casa_transaction_count": "INTEGER",
+      "status": "STRING"
+    }
+  },
+  "Loan": {
+    "pk": ["loan_id"],
+    "fk": {
+      "customer_id": "Customer Master.customer_id"
+    },
+    "columns": {
+      "loan_id": "STRING",
+      "customer_id": "STRING",
+      "loan_outstanding_balance": "NUMERIC",
+      "loan_status": "STRING"
+    }
+  },
+  "Credit Card": {
+    "pk": ["id"],
+    "fk": {
+      "customer_id": "Customer Master.customer_id"
+    },
+    "columns": {
+      "id": "STRING",
+      "customer_id": "STRING",
+      "credit_card_limit": "NUMERIC",
+      "status": "STRING"
+    }
+  },
+  "Demographic": {
+    "pk": ["customer_id"],
+    "fk": {
+      "customer_id": "Customer Master.customer_id"
+    },
+    "columns": {
+      "customer_id": "STRING",
+      "marital_status": "STRING",
+      "education": "STRING",
+      "occupation": "STRING"
+    }
+  },
+  "Channel Usage": {
+    "pk": ["id"],
+    "fk": {
+      "customer_id": "Customer Master.customer_id"
+    },
+    "columns": {
+      "id": "STRING",
+      "customer_id": "STRING",
+      "channel_type": "STRING",
+      "login_count": "INTEGER"
+    }
+  },
+  "Customer Interaction": {
+    "pk": ["interaction_id"],
+    "fk": {
+      "customer_id": "Customer Master.customer_id"
+    },
+    "columns": {
+      "interaction_id": "STRING",
+      "customer_id": "STRING",
+      "interaction_type": "STRING",
+      "interaction_date": "DATE"
+    }
+  },
+  "Campaign Response": {
+    "pk": ["campaign_id"],
+    "fk": {
+      "customer_id": "Customer Master.customer_id"
+    },
+    "columns": {
+      "campaign_id": "STRING",
+      "customer_id": "STRING",
+      "response_type": "STRING",
+      "response_date": "DATE"
+    }
+  }
+}

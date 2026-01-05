@@ -1,0 +1,1164 @@
+{
+  "Customer Master": {
+    "description": "Thông tin định danh khách hàng và các trường raw trong bảng Customer Master.",
+    "columns": [
+      {
+        "Feature": "customer_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING/INTEGER",
+        "Description": "ID duy nhất khách hàng (khóa join)",
+        "Example": "CUST_000123",
+        "NullPolicy": "NOT NULL",
+        "BusinessMeaning": "Khóa định danh để join các bảng; không dùng trực tiếp làm feature"
+      },
+      {
+        "Feature": "signup_date",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐⭐⭐",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày khách hàng đăng ký dịch vụ/ mở tài khoản lần đầu",
+        "Example": "2019-11-01",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Nguồn để tính tenure; dùng cho feature thời gian (tenure) chứ không dùng raw"
+      },
+      {
+        "Feature": "relationship_start_date",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày bắt đầu quan hệ khách hàng thực tế với ngân hàng",
+        "Example": "2019-11-01",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dùng để tính tenure chính xác hoặc so sánh consistency với signup_date"
+      },
+      {
+        "Feature": "account_open_date",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày mở account (account-level)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Mốc để tính age_of_account, aggregated khi tạo features account-level"
+      },
+      {
+        "Feature": "date_of_birth",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐",
+        "DataType": "DATE",
+        "Description": "Ngày sinh khách hàng",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dùng để derive age/age_group cho segmentation và explainability"
+      },
+      {
+        "Feature": "gender",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐",
+        "DataType": "STRING",
+        "Description": "Giới tính khách hàng (M/F/O/U)",
+        "Example": "",
+        "NullPolicy": "'U'",
+        "BusinessMeaning": "Dùng cẩn trọng cho phân tích/segment; có thể làm feature tuỳ chính sách fairness"
+      },
+      {
+        "Feature": "city",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "Thành phố hoặc thị trấn nơi khách hàng cư trú",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Thành phần địa lý thô; thường giảm cardinality thành region trước khi dùng"
+      },
+      {
+        "Feature": "region",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Vùng địa lý (mapping từ city)",
+        "Example": "",
+        "NullPolicy": "'UNKNOWN'",
+        "BusinessMeaning": "Region chuẩn hoá từ city; dùng cho phân tích vùng và feature địa lý"
+      },
+      {
+        "Feature": "customer_type",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "STRING",
+        "Description": "Loại khách hàng: retail / corporate / SME",
+        "Example": "",
+        "NullPolicy": "'UNKNOWN'",
+        "BusinessMeaning": "Phân loại business để điều chỉnh model/chiến lược retention"
+      },
+      {
+        "Feature": "segment",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Phân đoạn marketing của khách hàng",
+        "Example": "",
+        "NullPolicy": "'UNSEGMENTED'",
+        "BusinessMeaning": "Phân đoạn marketing/kinh doanh dùng cho stratification và target campaign"
+      },
+      {
+        "Feature": "tier",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "STRING/INTEGER",
+        "Description": "Hạng khách hàng (cấp độ phân loại thương mại)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Hạng/loại dịch vụ (VIP/standard) dùng làm proxy giá trị khách hàng"
+      },
+      {
+        "Feature": "risk_rating",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐⭐",
+        "DataType": "STRING/INTEGER",
+        "Description": "Đánh giá rủi ro (Risk) của khách hàng",
+        "Example": "",
+        "NullPolicy": "'UNASSIGNED'",
+        "BusinessMeaning": "Indicator rủi ro từ bộ phận risk; có thể correlate với hành vi nhưng cần guard leakage"
+      },
+      {
+        "Feature": "customer_name",
+        "Category": "PII",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "Tên đầy đủ khách hàng (PII) — nên mask khi cần",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Chứa PII; dùng cho hiển thị/communication, không dùng trực tiếp cho model"
+      },
+      {
+        "Feature": "phone",
+        "Category": "PII",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "Số điện thoại liên hệ (PII)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "PII; dùng cho contact/marketing sau khi hash/normalize"
+      },
+      {
+        "Feature": "email",
+        "Category": "PII",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "Địa chỉ email khách hàng (PII)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "PII; dùng cho liên hệ/campaign, không dùng raw trong model"
+      },
+      {
+        "Feature": "account_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING/INTEGER",
+        "Description": "ID của tài khoản (account-level identifier)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Key account-level để aggregate hoặc join, không dùng làm predictor"
+      },
+      {
+        "Feature": "account_close_date",
+        "Category": "Outcome",
+        "Used in Model": "❌❌",
+        "Strength": "⭐label churn⭐",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày đóng account (label/outcome)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dùng để tạo label churn; không dùng làm feature (leakage)"
+      },
+      {
+        "Feature": "close_reason",
+        "Category": "Outcome",
+        "Used in Model": "❌❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "Lý do khách hàng đóng account",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Thông tin hậu kiểm để phân tích nguyên nhân, không dùng để train"
+      },
+      {
+        "Feature": "status",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐label churn⭐",
+        "DataType": "STRING",
+        "Description": "Trạng thái account tại thời điểm snapshot",
+        "Example": "",
+        "NullPolicy": "'UNKNOWN'",
+        "BusinessMeaning": "Trạng thái hiện tại dùng để derive label; tránh leak nếu lấy trạng thái sau snapshot"
+      },
+      {
+        "Feature": "kyc_status",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "Trạng thái KYC của khách hàng (ví dụ: NOT_SUBMITTED, VERIFIED)",
+        "Example": "",
+        "NullPolicy": "'NOT_SUBMITTED'",
+        "BusinessMeaning": "Thông tin compliance; có thể dùng như contextual feature, không phải predictor mạnh"
+      }
+    ]
+  },
+  "CASA": {
+    "description": "Bảng giao dịch CASA — các trường raw (không bao gồm engineered features)",
+    "columns": [
+      {
+        "Feature": "customerid",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING/INTEGER",
+        "Description": "Mã khách hàng dùng để join với bảng khác",
+        "Example": "",
+        "NullPolicy": "NOT NULL",
+        "BusinessMeaning": "Key để aggregate từ giao dịch lên customer-level"
+      },
+      {
+        "Feature": "id",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING/INTEGER",
+        "Description": "Row id trong nguồn CASA",
+        "Example": "",
+        "NullPolicy": "NOT NULL",
+        "BusinessMeaning": "ID kỹ thuật bản ghi dùng cho trace/debug, không dùng làm feature"
+      },
+      {
+        "Feature": "snapshot_month",
+        "Category": "Time index",
+        "Used in Model": "⚠️",
+        "Strength": "",
+        "DataType": "YYYYMM/DATE",
+        "Description": "Mốc snapshot (tháng) dùng để tính feature/label theo thời gian",
+        "Example": "",
+        "NullPolicy": "NOT NULL",
+        "BusinessMeaning": "Mốc thời gian cut-off; mọi feature phải tính <= snapshot_date để tránh leakage"
+      },
+      {
+        "Feature": "casa_daily_average_balance",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Số dư trung bình hàng ngày trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Indicator thanh khoản; nguồn cho nhiều engineered features (trend, volatility)"
+      },
+      {
+        "Feature": "casa_inflow",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Tổng tiền vào trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Nguồn thu nhập/nhập tiền; giảm inflow là tín hiệu early churn"
+      },
+      {
+        "Feature": "casa_outflow",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Tổng tiền ra trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dòng tiền ra; cùng inflow dùng để tính net_flow và stress tài chính"
+      },
+      {
+        "Feature": "casa_transaction_count",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "INTEGER",
+        "Description": "Số giao dịch trong kỳ",
+        "Example": "",
+        "NullPolicy": "0",
+        "BusinessMeaning": "Proxy cho engagement; giảm mạnh thường precedes churn"
+      },
+      {
+        "Feature": "casa_transaction_avg_amount",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Giá trị trung bình mỗi giao dịch trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Mô tả quy mô giao dịch; thay đổi bất thường cần điều tra"
+      },
+      {
+        "Feature": "casa_closing_balance",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Số dư cuối kỳ của tài khoản CASA",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dùng để tính delta/decline; giảm kéo dài là strong churn signal"
+      },
+      {
+        "Feature": "casa_opening_balance",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Số dư đầu kỳ của tài khoản CASA",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dùng cùng closing_balance để tính biến động trong kỳ"
+      },
+      {
+        "Feature": "casa_active_flag",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐",
+        "DataType": "BOOLEAN/INT",
+        "Description": "Indicator có giao dịch trong kỳ trước (lagged)",
+        "Example": "",
+        "NullPolicy": "0",
+        "BusinessMeaning": "Lagged activity flag; giúp phân biệt transient inactivity vs long-term dormancy"
+      },
+      {
+        "Feature": "casa_account_status",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐",
+        "DataType": "STRING",
+        "Description": "Trạng thái account (đã được mapping)",
+        "Example": "",
+        "NullPolicy": "'UNKNOWN'",
+        "BusinessMeaning": "Trạng thái chuẩn hoá để derive label (ACTIVE/DORMANT/CLOSED); chú ý time-awareness"
+      },
+      {
+        "Feature": "casa_status_code",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "Mã trạng thái chi tiết của giao dịch/account",
+        "Example": "",
+        "NullPolicy": "'UNKNOWN'",
+        "BusinessMeaning": "Mã chi tiết trạng thái dùng cho mapping và rule-based label derivation"
+      },
+      {
+        "Feature": "account_closure_date",
+        "Category": "Outcome",
+        "Used in Model": "❌❌",
+        "Strength": "⭐label churn⭐",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày đóng account (label/outcome)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Outcome chính cho churn label; không dùng làm feature (leakage)"
+      }
+    ]
+  },
+  "Loan": {
+    "description": "Bảng Loan — các trường raw (không bao gồm engineered features)",
+    "columns": [
+      {
+        "Feature": "loan_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "ID duy nhất của khoản vay",
+        "Example": "LN00012345",
+        "NullPolicy": "NOT NULL",
+        "BusinessMeaning": "Khóa bản ghi khoản vay; dùng để trace và aggregate"
+      },
+      {
+        "Feature": "customer_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "Mã khách hàng sở hữu khoản vay",
+        "Example": "CUST001234",
+        "NullPolicy": "NOT NULL",
+        "BusinessMeaning": "Join key để liên kết loan với customer-level features"
+      },
+      {
+        "Feature": "snapshot_month",
+        "Category": "Time index",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "YYYYMM",
+        "Description": "Tháng tham chiếu dữ liệu khoản vay",
+        "Example": "202512",
+        "NullPolicy": "NOT NULL",
+        "BusinessMeaning": "Mốc thời gian dùng để tính các feature lagged/trend"
+      },
+      {
+        "Feature": "loan_outstanding_balance",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Số dư nợ chưa phải trả của khoản vay",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Đo áp lực nợ; ratio với CASA inflow có thể chỉ báo stress tài chính"
+      },
+      {
+        "Feature": "loan_monthly_payment",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Số tiền trả hàng tháng cho khoản vay",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Áp lực dòng tiền hàng tháng; so với inflow để đo burden"
+      },
+      {
+        "Feature": "loan_count",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "INTEGER",
+        "Description": "Số lượng khoản vay mà khách hàng đang có",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Số khoản vay giúp đánh giá mức độ phức tạp tài chính của customer"
+      },
+      {
+        "Feature": "loan_has_arrears",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "BOOLEAN",
+        "Description": "Khách hàng đang có khoản trễ hạn hiện tại",
+        "Example": "1 = đang trễ hạn, 0 = không trễ hạn",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Cờ trễ hạn hiện tại; dùng để tạo lagged features, không dùng trực tiếp (risk/leakage)"
+      },
+      {
+        "Feature": "loan_payment_status",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐",
+        "DataType": "STRING",
+        "Description": "Trạng thái thanh toán khoản vay (on-time/late/default)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Trạng thái thanh toán dùng để tạo severity/lagged indicators"
+      },
+      {
+        "Feature": "loan_status",
+        "Category": "Outcome",
+        "Used in Model": "❌❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "Trạng thái cuối cùng của khoản vay (ví dụ: written_off, closed)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Outcome của loan (vi phạm/write-off) — leakage nếu dùng làm feature"
+      },
+      {
+        "Feature": "loan_written_off",
+        "Category": "Outcome",
+        "Used in Model": "❌❌",
+        "Strength": "",
+        "DataType": "BOOLEAN",
+        "Description": "Cờ cho biết khoản vay đã bị charge-off/write-off hay chưa",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Outcome hậu quả; chỉ dùng cho phân tích, không đưa vào training"
+      }
+    ]
+  },
+  "Credit Card": {
+    "description": "Bảng Credit Card — các trường raw (không bao gồm engineered features)",
+    "columns": [
+      {
+        "Feature": "id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "ID bản ghi giao dịch/thẻ tín dụng",
+        "Example": "TX123456789",
+        "NullPolicy": "NOT NULL",
+        "BusinessMeaning": "ID bản ghi dùng để trace giao dịch; không dùng làm feature"
+      },
+      {
+        "Feature": "customer_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING",
+        "Description": "Mã khách hàng sở hữu thẻ tín dụng",
+        "Example": "CUST000123",
+        "NullPolicy": "NOT NULL",
+        "BusinessMeaning": "Join key để kết hợp credit card data với customer"
+      },
+      {
+        "Feature": "snapshot_month",
+        "Category": "Time index",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "YYYYMM",
+        "Description": "Tháng tham chiếu của dữ liệu giao dịch/thẻ",
+        "Example": "202512",
+        "NullPolicy": "NOT NULL",
+        "BusinessMeaning": "Mốc thời gian để tính trend và engineered features"
+      },
+      {
+        "Feature": "credit_card_transaction_count",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "INTEGER",
+        "Description": "Số giao dịch thẻ tín dụng trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Mức độ engagement qua thẻ; giảm có thể là early churn signal"
+      },
+      {
+        "Feature": "credit_card_spending",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Tổng chi tiêu trên thẻ tín dụng trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Thể hiện activity/monetary engagement"
+      },
+      {
+        "Feature": "credit_card_utilization_rate",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Tỷ lệ sử dụng hạn mức thẻ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Độ lệch sử dụng hạn mức; tăng cao có thể chỉ báo tài chính stress"
+      },
+      {
+        "Feature": "credit_card_outstanding_balance",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Số dư chưa thanh toán trên thẻ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dư nợ thẻ; kết hợp payment metrics để đánh giá burden"
+      },
+      {
+        "Feature": "card_product_type",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Loại sản phẩm thẻ (debit/credit/brand)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Context về loại thẻ; dùng cho phân tích, encoding khi cần"
+      },
+      {
+        "Feature": "statement_balance",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Số dư trên sao kê gần nhất",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dùng để tính delta/trend so với các kỳ trước"
+      },
+      {
+        "Feature": "minimum_due",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Khoản tối thiểu cần thanh toán trên sao kê",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Cơ sở để tính payment burden ratio"
+      },
+      {
+        "Feature": "payment_amount",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Số tiền khách hàng đã trả trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Hành vi thanh toán; kết hợp minimum_due để tính delays/arrears"
+      },
+      {
+        "Feature": "auto_debit_flag",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "BOOLEAN",
+        "Description": "Cờ cho biết tài khoản có dùng auto-debit thanh toán sao kê không",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Auto-debit giảm rủi ro quên thanh toán; strong signal cho retention"
+      },
+      {
+        "Feature": "credit_card_count",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "INTEGER",
+        "Description": "Số lượng thẻ tín dụng mà khách hàng sở hữu",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Số thẻ liên quan đến engagement và cross-sell propensity"
+      },
+      {
+        "Feature": "credit_card_payment_status",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐",
+        "DataType": "STRING",
+        "Description": "Trạng thái thanh toán thẻ (on-time/late/default)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Trạng thái dùng để tạo lagged indicators; tránh dùng raw nếu gây leakage"
+      },
+      {
+        "Feature": "credit_card_has_arrears",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "BOOLEAN",
+        "Description": "Cờ cho biết có nợ quá hạn hay không",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Flag arrears; useful for monitoring, use lagged for modeling"
+      },
+      {
+        "Feature": "credit_card_limit",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Hạn mức tín dụng của thẻ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dùng để chuẩn hoá spending và tính utilization"
+      }
+    ]
+  },
+  "Demographic": {
+    "description": "Các trường nhân khẩu học (Customer-level)",
+    "columns": [
+      {
+        "Feature": "customer_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING/INTEGER",
+        "Description": "Mã khách hàng dùng để join",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Key để liên kết các bảng; không dùng làm feature"
+      },
+      {
+        "Feature": "customer_age",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "INTEGER",
+        "Description": "Tuổi hiện tại của khách hàng",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Age dùng cho segmentation và interpretability của model"
+      },
+      {
+        "Feature": "income_level",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "NUMERIC/STRING",
+        "Description": "Mức thu nhập hoặc phân lớp thu nhập",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Proxy cho khả năng chi tiêu và chịu áp lực tài chính"
+      },
+      {
+        "Feature": "employment_status",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "STRING",
+        "Description": "Trạng thái nghề nghiệp (ví dụ: employed, self-employed, unemployed)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Ổn định việc làm liên quan tới thu nhập/độ ổn định tài chính"
+      },
+      {
+        "Feature": "product_count",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "INTEGER",
+        "Description": "Số lượng sản phẩm ngân hàng mà khách hàng đang sử dụng",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Độ gắn kết với ngân hàng; nhiều sản phẩm thường giảm churn risk"
+      },
+      {
+        "Feature": "occupation",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Nghề nghiệp/chức danh của khách hàng",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dùng cho phân tích segmentation và proxy thu nhập/behavior"
+      },
+      {
+        "Feature": "residence_location",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Vị trí cư trú chính (address/city/region)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Location dùng để xác định urban/rural và ảnh hưởng tới channel preference"
+      },
+      {
+        "Feature": "channel_preference",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Kênh tương tác ưa thích (mobile/branch/internet/ATM)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Chuỗi kênh ưa thích; giúp cá nhân hoá campaign và phân tích retention"
+      },
+      {
+        "Feature": "created_date",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày tạo hồ sơ khách hàng trong hệ thống",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": ""
+      }
+    ]
+  },
+  "Channel Usage": {
+    "description": "Các trường raw về hành vi sử dụng kênh số (digital/channel activity)",
+    "columns": [
+      {
+        "Feature": "customer_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING/INTEGER",
+        "Description": "Mã khách hàng dùng để join",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Key để join với Customer Master; không dùng làm feature trực tiếp"
+      },
+      {
+        "Feature": "snapshot_month",
+        "Category": "Time index",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "YYYYMM/DATE",
+        "Description": "Mốc thời gian (tháng) snapshot cho các feature hành vi",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Cut-off thời gian để tính các feature trend/recency"
+      },
+      {
+        "Feature": "channel_type",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Loại kênh sử dụng (mobile/web/ATM/branch)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Kênh tương tác chính; dùng cho phân tích digital adoption"
+      },
+      {
+        "Feature": "login_count",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "INTEGER",
+        "Description": "Số lần đăng nhập trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Indicator tần suất truy cập; giảm login là early churn signal"
+      },
+      {
+        "Feature": "transaction_count",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "INTEGER",
+        "Description": "Số giao dịch qua kênh trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Số giao dịch digital; dùng để đo engagement qua kênh"
+      },
+      {
+        "Feature": "transaction_amount",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Tổng giá trị giao dịch qua kênh trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Giá trị giao dịch qua kênh; cần guard outliers khi dùng"
+      },
+      {
+        "Feature": "active_flag",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐⭐",
+        "DataType": "BOOLEAN",
+        "Description": "Indicator khách hàng hoạt động trên kênh trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Cờ hoạt động thô; sử dụng lagged để tránh leakage"
+      },
+      {
+        "Feature": "last_activity_date",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐⭐",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày hoạt động cuối cùng trên kênh",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dùng để tính recency (days_since_last_login) — predictor mạnh cho churn"
+      },
+      {
+        "Feature": "device_type",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Loại thiết bị dùng để truy cập (mobile/desktop/tablet)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Context UX/device; có thể dùng để debug retention issues"
+      },
+      {
+        "Feature": "failed_login_count",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "INTEGER",
+        "Description": "Số lần đăng nhập thất bại trong kỳ",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Indicator friction/security issue; nhiều failed login có thể dẫn tới churn"
+      },
+      {
+        "Feature": "session_duration",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "NUMERIC",
+        "Description": "Thời lượng phiên trung bình trên kênh (giây/phút)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Engagement depth; thời lượng giảm có thể cho thấy disengagement"
+      }
+    ]
+  },
+  "Customer Interaction": {
+    "description": "Các trường raw về tương tác khách hàng, tickets và khiếu nại (không bao gồm các feature derived)",
+    "columns": [
+      {
+        "Feature": "customer_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING/INTEGER",
+        "Description": "Mã khách hàng dùng để join",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Join key để liên kết interaction với customer-level data"
+      },
+      {
+        "Feature": "interaction_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING/INTEGER",
+        "Description": "ID của tương tác/ticket",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "ID kỹ thuật ticket để dedupe và trace lifecycle"
+      },
+      {
+        "Feature": "interaction_date",
+        "Category": "Raw",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày xảy ra tương tác",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Mốc thời gian event; dùng để tính recency và windowed features"
+      },
+      {
+        "Feature": "interaction_channel",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Kênh tương tác (call/email/chat/branch)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Kênh contact; dùng để phân tích trải nghiệm và kênh chịu trách nhiệm"
+      },
+      {
+        "Feature": "interaction_type",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐⭐",
+        "DataType": "STRING",
+        "Description": "Loại tương tác (inquiry/complaint/feedback)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Loại interaction; complaint tăng → churn risk tăng"
+      },
+      {
+        "Feature": "interaction_reason",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Nguyên nhân/tóm tắt lý do tương tác",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Chi tiết nguyên nhân; dùng để cluster vấn đề và root-cause analysis"
+      },
+      {
+        "Feature": "interaction_status",
+        "Category": "Behavioral / Leakage",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐⭐",
+        "DataType": "STRING",
+        "Description": "Trạng thái tương tác của khách hàng",
+        "Example": "open, closed, pending",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Trạng thái xử lý ticket; dùng lagged/archived value để tránh leakage"
+      },
+      {
+        "Feature": "resolution_code",
+        "Category": "Behavioral / Leakage",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Mã kết quả xử lý tương tác",
+        "Example": "RES001, RES002",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Kết quả xử lý dùng để đo unresolved_count/avg_resolution_time"
+      },
+      {
+        "Feature": "priority_level",
+        "Category": "Behavioral / Lagged",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Mức độ ưu tiên của tương tác",
+        "Example": "low, medium, high",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "High priority interactions có thể liên quan tới nghiêm trọng issues → churn"
+      },
+      {
+        "Feature": "assigned_team",
+        "Category": "Operational / Behavioral",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Đội/nhóm xử lý tương tác",
+        "Example": "Ops, Tech, CS",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Thông tin vận hành; dùng cho phân tích SLA và root-cause"
+      },
+      {
+        "Feature": "interaction_text",
+        "Category": "NLP / Text",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "TEXT",
+        "Description": "Nội dung tương tác của khách hàng",
+        "Example": "Khách hàng phản hồi về hóa đơn, yêu cầu hỗ trợ",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Raw text dùng cho NLP (sentiment/intent); cần mask PII trước khi dùng"
+      }
+    ]
+  },
+  "Campaign Response": {
+    "description": "Các trường raw liên quan đến chiến dịch marketing và phản hồi",
+    "columns": [
+      {
+        "Feature": "customer_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING/INTEGER",
+        "Description": "Mã khách hàng dùng để join",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Join key cho exposures & responses"
+      },
+      {
+        "Feature": "campaign_id",
+        "Category": "Identifier",
+        "Used in Model": "❌",
+        "Strength": "",
+        "DataType": "STRING/INTEGER",
+        "Description": "ID chiến dịch marketing",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "ID chiến dịch dùng để dedupe/nhóm phân tích campaign-level"
+      },
+      {
+        "Feature": "campaign_type",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Loại chiến dịch (email/sms/ads)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Loại campaign (retention/upsell) dùng để phân tích hiệu quả"
+      },
+      {
+        "Feature": "campaign_channel",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Kênh gửi chiến dịch (email/sms/push)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Kênh gửi dùng để đo response rate theo channel"
+      },
+      {
+        "Feature": "campaign_start_date",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày bắt đầu chiến dịch",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Mốc bắt đầu campaign; dùng để tính window exposure"
+      },
+      {
+        "Feature": "campaign_end_date",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày kết thúc chiến dịch",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Tùy chọn; dùng cho attribution window khi cần"
+      },
+      {
+        "Feature": "campaign_sent_date",
+        "Category": "Raw",
+        "Used in Model": "✅",
+        "Strength": "⭐⭐",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày thực tế gửi thông điệp chiến dịch",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Timestamp exposure; phải đảm bảo <= snapshot_date khi tính feature"
+      },
+      {
+        "Feature": "campaign_response_flag",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "BOOLEAN",
+        "Description": "Cờ khách hàng phản hồi chiến dịch (clicked/responded)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Dấu hiệu phản hồi; chỉ dùng nếu response_date <= snapshot_date để tránh leakage"
+      },
+      {
+        "Feature": "response_date",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "DATE/TIMESTAMP",
+        "Description": "Ngày khách hàng phản hồi chiến dịch",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Timestamp phản hồi; dùng cho engineered response features nếu time-bounded"
+      },
+      {
+        "Feature": "response_type",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Loại phản hồi (click/open/purchase/unsubscribe)",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Chi tiết loại phản hồi để phân tích chất lượng interaction"
+      },
+      {
+        "Feature": "offer_type",
+        "Category": "Raw",
+        "Used in Model": "⚠️",
+        "Strength": "⭐⭐",
+        "DataType": "STRING",
+        "Description": "Loại ưu đãi được gửi trong chiến dịch",
+        "Example": "",
+        "NullPolicy": "NULLABLE",
+        "BusinessMeaning": "Loại ưu đãi dùng cho uplift/targeting analysis"
+      }
+    ]
+  }
+}
