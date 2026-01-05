@@ -5,9 +5,11 @@ import streamlit as st
 from graphviz import Digraph
 
 # --- 1. CẤU HÌNH & HẰNG SỐ ---
-BASE_DIR = os.path.dirname(__file__)
-SCHEMA_PATH = os.path.join(BASE_DIR, "schema.json")
-DB_SCHEMA_PATH = os.path.join(BASE_DIR, "database_schema.json")
+ROOT_DIR = os.getcwd()
+
+SCHEMA_PATH = os.path.join(ROOT_DIR, "schema.json")
+DB_SCHEMA_PATH = os.path.join(ROOT_DIR, "database_schema.json")
+
 
 REQUIRED_KEYS = [
     "Feature", "Category", "Used in Model", "Strength", 
