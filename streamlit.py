@@ -6,8 +6,8 @@ from graphviz import Digraph
 
 # --- 1. CẤU HÌNH & HẰNG SỐ ---
 BASE_DIR = os.path.dirname(__file__)
-SCHEMA_PATH = os.path.join(BASE_DIR, "web/schema.json")
-DB_SCHEMA_PATH = os.path.join(BASE_DIR, "web/database_schema.json")
+SCHEMA_PATH = os.path.join(BASE_DIR, "schema.json")
+DB_SCHEMA_PATH = os.path.join(BASE_DIR, "database_schema.json")
 
 REQUIRED_KEYS = [
     "Feature", "Category", "Used in Model", "Strength", 
