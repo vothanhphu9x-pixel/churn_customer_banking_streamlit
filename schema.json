@@ -740,7 +740,7 @@
       {
         "Feature": "occupation",
         "Category": "Raw",
-        "Used in Model": "❌",
+        "Used in Model": "✅",
         "Strength": "⭐⭐",
         "DataType": "STRING",
         "Description": "Nghề nghiệp/chức danh của khách hàng",
